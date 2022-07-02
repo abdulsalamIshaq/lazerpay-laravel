@@ -3,9 +3,8 @@
 namespace Abdulsalamishaq\Lazerpay\Apis;
 
 use Abdulsalamishaq\Lazerpay\Interfaces\PaymentInterface;
-use Illuminate\Support\Facades\Http;
 
-class Payment implements PaymentInterface
+class Payment extends HttpAbstract implements PaymentInterface
 {
     /**
      * Initialize transaction
@@ -15,7 +14,7 @@ class Payment implements PaymentInterface
      */
     public function initialize(array $data): array
     {
-        return (Http::lazerpay()->post('/transaction/initialize', $data))->json();
+        return $this->post('/transaction/initialize', $data);
     }
 
     /**
@@ -26,7 +25,7 @@ class Payment implements PaymentInterface
      */
     public function verify(string $reference): array
     {
-        return (Http::lazerpay()->get("/transaction/verify/$reference"))->json();
+        return $this->get("/transaction/verify/$reference");
     }
 
     /**
@@ -37,20 +36,20 @@ class Payment implements PaymentInterface
      */
     public function links(array $data): array
     {
-        return (Http::lazerpay()->post("/payment-links", $data))->json();
+        return $this->post("/payment-links", $data);
     }
 
     /**
      * Get payment links
      *
-     * @param string $reference
+     * @param string|null $reference
      * @return array
      */
     public function getLinks(?string $reference = null): array
     {
         $url = "/payment-links" . (! is_null($reference) ? "/$reference" : "");
 
-        return (Http::lazerpay()->get($url))->json();
+        return $this->get($url);
     }
 
     /**
@@ -62,8 +61,8 @@ class Payment implements PaymentInterface
      */
     public function updateLinks(string $reference, string $status): array
     {
-        return (Http::lazerpay()->put("/payment-links/$reference", [
+        return $this->put("/payment-links/$reference", [
                 'status' => $status,
-            ]))->json();
+            ]);
     }
 }

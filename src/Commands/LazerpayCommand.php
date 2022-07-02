@@ -21,18 +21,28 @@ class LazerpayCommand extends Command
     public $description = 'Install lazerpay assets';
 
     /**
-     * Execute the console command.
+     * Create a new command instance.
      *
      * @return void
      */
-    public function handle(): void
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
+    /**
+     * Execute the console command.
+     *
+     * @return mixed
+     */
+    public function handle()
     {
         $this->line("<info>Setting up lazerpay</info>");
         $this->line("");
         sleep(2);
 
         $this->call('vendor:publish', [
-            '--tag' => 'lazerpay.config',
+            '--tag' => 'lazerpay-config',
         ]);
 
         $this->line("");

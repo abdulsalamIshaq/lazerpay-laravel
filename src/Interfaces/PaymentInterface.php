@@ -31,7 +31,7 @@ interface PaymentInterface
     /**
      * Get payment links
      *
-     * @param string $reference
+     * @param string|null $reference
      * @return array
      */
     public function getLinks(?string $reference = null): array;

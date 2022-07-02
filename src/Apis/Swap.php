@@ -2,9 +2,7 @@
 
 namespace Abdulsalamishaq\Lazerpay\Apis;
 
-use Illuminate\Support\Facades\Http;
-
-class Swap
+class Swap extends HttpAbstract
 {
     /**
      * Swap coin
@@ -12,9 +10,9 @@ class Swap
      * @param array $data
      * @return array
      */
-    public function cryptoSwap(array $data): array
+    public function crypto(array $data): array
     {
-        return (Http::lazerpay()->post('/swap/crypto', $data))->json();
+        return $this->post('/swap/crypto', $data);
     }
 
     /**
@@ -25,6 +23,6 @@ class Swap
      */
     public function amount(array $data): array
     {
-        return (Http::lazerpay()->post('/swap/crypto/amount-out', $data))->json();
+        return $this->post('/swap/crypto/amount-out', $data);
     }
 }

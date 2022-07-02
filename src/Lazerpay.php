@@ -2,57 +2,28 @@
 
 namespace Abdulsalamishaq\Lazerpay;
 
+use Abdulsalamishaq\Lazerpay\Apis\Misc;
 use Abdulsalamishaq\Lazerpay\Apis\Payment;
 use Abdulsalamishaq\Lazerpay\Apis\Swap;
 use Abdulsalamishaq\Lazerpay\Apis\Transfer;
-use Illuminate\Support\Facades\Http;
+use Exception;
 
 class Lazerpay
 {
-    public function payment(): Payment
-    {
-        return new Payment();
-    }
-
-    public function transfer(): Transfer
-    {
-        return new Transfer();
-    }
-
-    public function swaps(): Swap
-    {
-        return new Swap();
-    }
-
-    public function coins(): array
-    {
-        return (Http::lazerpay()->get('/coins'))->json();
-    }
-
-    public function rate(string $coin, string $currency): array
-    {
-        return (Http::lazerpay()->get('/rate', [$coin, $currency]))->json();
-    }
-
-    public function balance(string $coin): array
-    {
-        return (Http::lazerpay()->get('/wallet/balance', [$coin]))->json();
-    }
-
     /**
      * Dynamic method to get the api handlers
      *
+     * @param string $tag Endpoint Tag Name
+     * @throws Exception
      * @since 1.0
      *
-     * @param string $tag Endpoint Tag Name
      */
-    public function __set(string $tag, array $args)
+    public function __call(string $tag, array $args)
     {
-        // dd([]);
         $map = $this->apiMap();
 
         if (! isset($map[$tag])) {
-            throw new \Exception("The [$tag] is not a valid Endpoint tag.");
+            throw new Exception("The [$tag] is not a valid Endpoint tag.");
         }
 
         $class = $map[$tag];
@@ -60,11 +31,17 @@ class Lazerpay
         return new $class($this);
     }
 
-    public function apiMap()
+    /**
+     *
+     * @return string[]
+     */
+    public function apiMap(): array
     {
         return [
-            'payment' => \Abdulsalamishaq\Lazerpay\Apis\Payment::class,
+            'payment' => Payment::class,
             'transfer' => Transfer::class,
+            'swaps' => Swap::class,
+            'misc' => Misc::class,
         ];
     }
 }

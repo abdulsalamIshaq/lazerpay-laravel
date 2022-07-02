@@ -2,9 +2,7 @@
 
 namespace Abdulsalamishaq\Lazerpay\Apis;
 
-use Illuminate\Support\Facades\Http;
-
-class Transfer
+class Transfer extends HttpAbstract
 {
     /**
      * Crypto transfer
@@ -14,6 +12,6 @@ class Transfer
      */
     public function crypto(array $data): array
     {
-        return (Http::lazerpay()->post('/transfer', $data))->json();
+        return $this->post('/transfer', $data);
     }
 }
