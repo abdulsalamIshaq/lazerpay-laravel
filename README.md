@@ -1,87 +1,143 @@
+# Lazerpay Laravel Package
 
-[<img src="https://github-ads.s3.eu-central-1.amazonaws.com/support-ukraine.svg?t=1" />](https://supportukrainenow.org)
+A package for integrating Lazerpay services with your laravel application.
+## Requirements
 
-# This is my package lazerpay-laravel
-
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/abdulsalamishaq/lazerpay-laravel.svg?style=flat-square)](https://packagist.org/packages/abdulsalamishaq/lazerpay-laravel)
-[![GitHub Tests Action Status](https://img.shields.io/github/workflow/status/abdulsalamishaq/lazerpay-laravel/run-tests?label=tests)](https://github.com/abdulsalamishaq/lazerpay-laravel/actions?query=workflow%3Arun-tests+branch%3Amain)
-[![GitHub Code Style Action Status](https://img.shields.io/github/workflow/status/abdulsalamishaq/lazerpay-laravel/Check%20&%20fix%20styling?label=code%20style)](https://github.com/abdulsalamishaq/lazerpay-laravel/actions?query=workflow%3A"Check+%26+fix+styling"+branch%3Amain)
-[![Total Downloads](https://img.shields.io/packagist/dt/abdulsalamishaq/lazerpay-laravel.svg?style=flat-square)](https://packagist.org/packages/abdulsalamishaq/lazerpay-laravel)
-
-This is where your description should go. Limit it to a paragraph or two. Consider adding a small example.
-
-## Support us
-
-[<img src="https://github-ads.s3.eu-central-1.amazonaws.com/lazerpay-laravel.jpg?t=1" width="419px" />](https://spatie.be/github-ad-click/lazerpay-laravel)
-
-We invest a lot of resources into creating [best in class open source packages](https://spatie.be/open-source). You can support us by [buying one of our paid products](https://spatie.be/open-source/support-us).
-
-We highly appreciate you sending us a postcard from your hometown, mentioning which of our package(s) you are using. You'll find our address on [our contact page](https://spatie.be/about-us). We publish all received postcards on [our virtual postcard wall](https://spatie.be/open-source/postcards).
+* PHP ^8.1
+* Laravel ^9.0
 
 ## Installation
 
-You can install the package via composer:
-
+Via [Composer](https://getcomposer.org).
+To get the latest version of Laravel Lazerpay, simply run at the root of your laravel project.
 ```bash
-composer require abdulsalamishaq/lazerpay-laravel
+composer require abdulsalamishaq/laravel-lazerpay
 ```
-
-You can publish and run the migrations with:
-
+After Composer has installed the Laravel Lazerpay package, you may run the `lazerpay:install` Artisan command. This command publishes the configuration file of the package named `lazerpay.php`:
 ```bash
-php artisan vendor:publish --tag="lazerpay-laravel-migrations"
-php artisan migrate
+php artisan lazerpay:install
 ```
-
-You can publish the config file with:
-
-```bash
-php artisan vendor:publish --tag="lazerpay-laravel-config"
-```
-
-This is the contents of the published config file:
-
+## Setup
+Open your .env file and add your api key, sender id, channel and so on:
 ```php
-return [
-];
+LARZERPAY_SECRET_KEY="XXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+LARZERPAY_PUBLIC_KEY="XXXXXXXXXXXXXXXXXXXXXXXXXXXX"
 ```
-
-Optionally, you can publish the views using
-
-```bash
-php artisan vendor:publish --tag="lazerpay-laravel-views"
-```
-
 ## Usage
 
+### payments
+#### Accept payment
 ```php
-$lazerpay = new Abdulsalamishaq\Lazerpay();
-echo $lazerpay->echoPhrase('Hello, Abdulsalamishaq!');
+<?php 
+use Abdulsalamishaq\Lazerpay\Facades\Lazerpay;
+
+Lazerpay::payment()->initialize([
+    'customer_name' => 'Abdulsalam Ishaq',
+    'customer_email' => 'Abdulsalamkayodeishaq@gmail.com',
+    'coin' => 'USDT',
+    'currency' => 'NGN',
+    'amount' => 2000,
+]);
 ```
 
-## Testing
+#### Verify payment
+```php 
+<?php 
+use Abdulsalamishaq\Lazerpay\Facades\Lazerpay;
 
-```bash
-composer test
+Lazerpay::payment()->verify(reference: 'kjlakdr4387');
+```
+#### Payment link
+##### Create payment link
+```php 
+<?php
+use Abdulsalamishaq\Lazerpay\Facades\Lazerpay;
+
+Lazerpay::payment()->links([
+    'title' => 'Link title',
+    'description' => 'Link description'
+    'amount' => 2000,
+    'type' => 'standard',
+    'logo' => 'https://example.com/logo.png',
+    'currency' => 'NGN',
+    'redirect_url' => 'https://example.com/redirect-url',
+]);
+```
+##### Fetch payment links
+```php 
+<?php
+use Abdulsalamishaq\Lazerpay\Facades\Lazerpay;
+
+Lazerpay::payment()->getLinks();
+```
+##### Fetch payment link
+```php 
+<?php
+use Abdulsalamishaq\Lazerpay\Facades\Lazerpay;
+
+Lazerpay::payment()->getLinks(reference: 'lksdfjiefh');
+```
+##### Update a payment link
+```php
+<?php
+use Abdulsalamishaq\Lazerpay\Facades\Lazerpay;
+
+Lazerpay::payment()->updateLinks(reference: 'ljhfkjds', status: 'active');
+```
+### Transfer
+#### Crypto transfer
+```php
+<?php
+use Abdulsalamishaq\Lazerpay\Facades\Lazerpay;
+
+Lazerpay::transfer()->crypto([
+    'amount' => 12334,
+    'recipient' => '0x248a0Bb3906213AFA871aa5265Fd688d668647F8',
+    'coin' => 'USDT',
+    'metadata' => [ 'name' => 'Hello'],
+    'blockchain' => 'Binance Smart Chain',
+]);
+```
+### Swaps
+#### Crypto swap
+```php
+<?php
+use Abdulsalamishaq\Lazerpay\Facades\Lazerpay;
+
+Lazerpay::swaps()->crypto([
+    'amount' => 1234,
+    'fromCoin' => 'USDT',
+    'toCoin' => 'USDC',
+    'metadata' => [
+        'description' => 'USDT to USDC swap'
+    ],
+    'blockchain' => 'Binance Smart Chain',
+]);
+```
+### 
+#### List coins
+```php
+<?php
+use Abdulsalamishaq\Lazerpay\Facades\Lazerpay;
+
+Lazerpay::misc()->coins();
 ```
 
-## Changelog
+#### Rate
+```php
+<?php
+use Abdulsalamishaq\Lazerpay\Facades\Lazerpay;
 
-Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
+Lazerpay::misc()->rate(coin: 'USDT', currency: 'NGN');
+```
 
-## Contributing
+#### Wallet balance
+```php
+<?php
+use Abdulsalamishaq\Lazerpay\Facades\Lazerpay;
 
-Please see [CONTRIBUTING](https://github.com/spatie/.github/blob/main/CONTRIBUTING.md) for details.
+Lazerpay::misc()->balance('USDT');
+```
 
-## Security Vulnerabilities
-
-Please review [our security policy](../../security/policy) on how to report security vulnerabilities.
-
-## Credits
-
-- [Abdulsalam Ishaq](https://github.com/abdulsalamishaq)
-- [All Contributors](../../contributors)
-
-## License
-
-The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
+### Handling Webhook
+Loading.....
