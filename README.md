@@ -11,7 +11,7 @@ A package for integrating Lazerpay services with your laravel application.
 Via [Composer](https://getcomposer.org).
 To get the latest version of Laravel Lazerpay, simply run at the root of your laravel project.
 ```bash
-composer require abdulsalamishaq/laravel-lazerpay
+composer require abdulsalamIshaq/lazerpay-laravel
 ```
 After Composer has installed the Laravel Lazerpay package, you may run the `lazerpay:install` Artisan command. This command publishes the configuration file of the package named `lazerpay.php`:
 ```bash
